@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Движок cppc+cgoluajshtml - Веб-интерфейс</title>
+    <style>
+        body {
+            background-color: #1e1e24;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #4caf50;
+            border-bottom: 2px solid #4caf50;
+            padding-bottom: 10px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .control-panel {
+            background-color: #2a2a35;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        /* Стили для выезжающего окна Neocities */
+        #web-frame-container {
+            display: none; /* Изначально скрыто */
+            width: 640px;
+            height: 553px;
+            border: 3px solid #4caf50;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+            margin-top: 15px;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .status-box {
+            background-color: #111;
+            padding: 10px;
+            font-family: monospace;
+            border-radius: 5px;
+            color: #00ff00;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Модуль JS + HTML (Движок cppc+cgoluajshtml)</h1>
+    
+    <div class="container">
+        <!-- Панель управления -->
+        <div class="control-panel">
+            <h3>Управление 3D-Камерой (JS)</h3>
+            <button onclick="rotateCamera('left')">Повернуть камеру влево ↺</button>
+            <button onclick="rotateCamera('right')">Повернуть камеру вправо ↻</button>
+            <button onclick="rotateCamera('reset')">Сбросить камеру</button>
+        </div>
+
+        <div class="control-panel">
+            <h3>Интеграция с Сетью (HTML)</h3>
+            <!-- Та самая заветная кнопка -->
+            <button onclick="toggleNeocitiesWindow()">Добавить картинку (Открыть Neocities)</button>
+            
+            <!-- Выезжающее окно строго заданного размера 640x553 -->
+            <div id="web-frame-container">
+                <iframe src="https://neocities.org" id="neocities-iframe"></iframe>
+            </div>
+        </div>
+
+        <!-- Консоль движка для вывода логов -->
+        <div class="control-panel">
+            <h3>Консоль отладки камеры</h3>
+            <div id="console-log" class="status-box">Камера готова к вращению в 3D-пространстве. Текущий угол: 0°</div>
+        </div>
+    </div>
+
+    <!-- Тот самый JS скрипт, отвечающий за заглавные вещи и камеру -->
+    <script>
+        // Начальный угол поворота 3D-камеры в редакторе
+        let cameraRotationY = 0;
+
+        // Функция поворота 3D-камеры
+        function rotateCamera(direction) {
+            const logBox = document.getElementById('console-log');
+            
+            if (direction === 'left') {
+                cameraRotationY -= 15;
+                logBox.innerText = `[JS 3D-Камера] Поворот влево. Текущий угол по оси Y: ${cameraRotationY}°`;
+            } else if (direction === 'right') {
+                cameraRotationY += 15;
+                logBox.innerText = `[JS 3D-Камера] Поворот вправо. Текущий угол по оси Y: ${cameraRotationY}°`;
+            } else if (direction === 'reset') {
+                cameraRotationY = 0;
+                logBox.innerText = `[JS 3D-Камера] Положение сброшено. Текущий угол по оси Y: ${cameraRotationY}°`;
+            }
+            
+            // Здесь в будущем будет идти передача угла в твое Go/C++ 3D-ядро
+        }
+
+        // Функция открытия/закрытия выезжающего окна Neocities (640x553)
+        function toggleNeocitiesWindow() {
+            const frameContainer = document.getElementById('web-frame-container');
+            
+            if (frameContainer.style.display === 'none' || frameContainer.style.display === '') {
+                frameContainer.style.display = 'block';
+                console.log("[HTML] Окно сайта neocities.org (640x553) успешно выехало на экран.");
+            } else {
+                frameContainer.style.display = 'none';
+                console.log("[HTML] Окно скрыто.");
+            }
+        }
+    </script>
+
+</body>
+</html>
